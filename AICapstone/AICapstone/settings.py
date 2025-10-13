@@ -10,6 +10,18 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+#api 읽어오기
+import os
+import dotenv # 이 줄 추가
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+# .env 파일의 경로를 정확히 지정하여 로드하는 코드 추가
+dotenv.load_dotenv(os.path.join(BASE_DIR, '.env'))
+
+
+
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -37,6 +49,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    'youtube_api'
 ]
 
 MIDDLEWARE = [
