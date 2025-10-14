@@ -1,0 +1,32 @@
+<div class="chat-bubble ai-bubble">
+
+    <p class="summary-paragraph">{{ recommendation_data.summary|safe }}</p>
+
+    <div class="analysis-table-container">
+        <h4>상세 분석 결과</h4>
+        <table>
+            <thead>
+                <tr>
+                    <th>분석 항목</th>
+                    <th>내용</th>
+                    <th>신뢰도</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in recommendation_data.analysis_table %}
+                <tr>
+                    <td>{{ item.category }}</td>
+                    <td>{{ item.value }}</td>
+                    <td>{{ item.score|floatformat:2 }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="recommendation-footer">
+        <strong>{{ recommendation_data.recommendation_summary }}</strong>
+        <p>{{ recommendation_data.recommendations|join:", " }}</p>
+    </div>
+
+</div>

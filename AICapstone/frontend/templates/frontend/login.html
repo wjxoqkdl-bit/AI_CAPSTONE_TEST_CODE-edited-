@@ -1,0 +1,16 @@
+{% extends 'frontend/base.html' %}
+
+{% block title %}AI Agent - 로그인{% endblock %}
+
+{% block content %}
+<div class="login-page-wrapper">
+    <div class="form-container">
+        <h1>AI Agent</h1>
+        <form action="{% url 'search_page' %}" method="get">
+            <input type="email" placeholder="이메일" required>
+            <input type="password" placeholder="비밀번호" required>
+            <button type="submit">로그인</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
