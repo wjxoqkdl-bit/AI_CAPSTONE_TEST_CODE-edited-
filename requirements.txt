@@ -3,3 +3,5 @@ Django @ file:///C:/b/abs_732pccxzov/croot/django_1745263601709/work
 sqlparse @ file:///C:/b/abs_68npyz0s6_/croot/sqlparse_1734704476369/work
 openai
 python-dotenv
+streamlit
+requests
