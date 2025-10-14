@@ -1,10 +1,11 @@
 # frontend/views.py
 
-import random
-import time
 from django.shortcuts import render
+from django.conf import settings
 
-# 사용자의 웹 요청을 처리하는 함수들의 모음
+# 다른 앱의 서비스와 클래스를 가져옵니다.
+from gptAPI.services import extract_keywords
+from youtube_api.api_client import YouTubeDataCollector
 
 def login_view(request):
     "로그인 페이지"
@@ -26,37 +27,47 @@ def search_page_view(request):
 
 
 def recommendation_result_view(request):
-    "AI 추천 결과 (HTMX가 이 부분을 로드)"
-    user_query = request.POST.get('query', '요청하신 내용')
-    time.sleep(1) # AI가 분석하는 것처럼 보이기 위한 딜레이
+    """AI 추천 결과를 실제 API를 호출하여 처리합니다."""
+    user_query = request.POST.get('query', '')
+    if not user_query:
+        # 간단한 에러 처리, 실제로는 더 정교한 처리가 필요할 수 있습니다.
+        context = {'recommendation_data': {'summary': '검색어를 입력해주세요.'}}
+        return render(request, 'frontend/partials/_search_results.html', context)
 
-    # 3가지 시나리오의 임시 데이터
-    tech_result = {
-        'summary': f'"{user_query}" 관련 특징 분석 결과입니다.',
-        'analysis_table': [{'category': '주제', 'value': '최신 스마트폰, 게이밍 기어', 'score': 0.96},
-                           {'category': '분위기', 'value': '유머러스, 빠른 템포', 'score': 0.91}],
-        'recommendation_summary': '분석 결과를 바탕으로 다음 채널들을 추천합니다.',
-        'recommendations': ['ITSub', 'TechFunny', 'Gadget Pro']
-    }
-    cooking_result = {
-        'summary': f'"{user_query}" 요청에 대해, 맛있는 인생을 선사하는 채널들을 찾았습니다.',
-        'analysis_table': [{'category': '주제', 'value': '홈베이킹, 한식, 간단한 요리', 'score': 0.98},
-                           {'category': '분위기', 'value': '차분한, ASMR, 갬성있는 영상', 'score': 0.95}],
-        'recommendation_summary': '이런 분위기를 좋아하신다면, 아래 채널들을 확인해 보세요.',
-        'recommendations': ['Peaceful Kitchen', 'Suna\'s Home Cafe']
-    }
-    kids_result = {
-        'summary': f'"{user_query}"와 같은 아이들을 위한 채널의 특징은 다음과 같습니다.',
-        'analysis_table': [{'category': '주제', 'value': '알파벳 놀이, 숫자 공부, 과학 실험', 'score': 0.97},
-                           {'category': '분위기', 'value': '밝고 활기참, 다채로운 색감', 'score': 0.93}],
-        'recommendation_summary': '아이와 함께 시청하기 좋은 채널들을 추천해 드립니다.',
-        'recommendations': ['Little Baby Bum', 'Cocomelon']
+    # 1. gptAPI 서비스를 호출하여 키워드 추출
+    keywords = extract_keywords(user_query)
+    if not keywords:
+        context = {'recommendation_data': {'summary': '입력하신 내용에서 키워드를 추출하지 못했습니다.'}}
+        return render(request, 'frontend/partials/_search_results.html', context)
+
+    # 2. youtube_api 서비스를 호출하여 채널 검색 (가장 첫 키워드 사용)
+    youtube_api_key = getattr(settings, 'YOUTUBE_API_KEY', None)
+    if not youtube_api_key:
+        context = {'recommendation_data': {'summary': 'YOUTUBE_API_KEY가 설정되지 않았습니다.'}}
+        return render(request, 'frontend/partials/_search_results.html', context)
+
+    collector = YouTubeDataCollector(youtube_api_key)
+    # 여러 키워드 중 첫 번째 키워드를 검색에 사용
+    search_keyword = keywords[0]
+    found_channels = collector.search_channels(keyword=search_keyword, max_results=5)
+
+    # 3. 검색 결과를 템플릿에 맞는 형식으로 가공
+    recommendations = []
+    for channel in found_channels:
+        recommendations.append(channel['snippet']['title'])
+
+    # 템플릿에 전달할 최종 데이터
+    result_data = {
+        'summary': f'\"{user_query}\" 요청에 대한 분석 결과입니다.',
+        'analysis_table': [
+            {'category': '핵심 키워드', 'value': ", ".join(keywords), 'score': 0.95},
+            {'category': '검색 키워드', 'value': search_keyword, 'score': 0.90}
+        ],
+        'recommendation_summary': f'\'{search_keyword}\'(으)로 검색한 결과, 다음과 같은 채널을 추천합니다.',
+        'recommendations': recommendations if recommendations else ['추천 채널을 찾지 못했습니다.']
     }
 
-    # 3가지 결과 중 하나를 무작위로 선택.
-    selected_data = random.choice([tech_result, cooking_result, kids_result])
-
-    context = {'recommendation_data': selected_data}
+    context = {'recommendation_data': result_data}
     return render(request, 'frontend/partials/_search_results.html', context)
 
 
