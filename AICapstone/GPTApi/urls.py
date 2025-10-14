@@ -1,7 +1,7 @@
 from django.urls import path
 from . import views
 
-app_name = 'GPTApi'
+app_name = 'gptAPI'
 
 urlpatterns = [
     # ex: /api/gpt/call/
