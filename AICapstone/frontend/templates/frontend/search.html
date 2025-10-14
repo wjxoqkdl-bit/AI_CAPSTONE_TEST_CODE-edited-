@@ -1,0 +1,76 @@
+{% extends 'frontend/base.html' %}
+
+{% block content %}
+<div class="chat-layout">
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>AI Agent</h2>
+            <a href="{% url 'search_page' %}" class="new-chat-btn" title="새로운 추천 시작하기">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 12H18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M12 18V6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+            </a>
+        </div>
+        <ul class="chat-list">
+            {# 링크 클릭 시 hx-get 요청으로 과거 채팅 내용을 불러옴 #}
+            {% for chat in chat_list %}
+                <li>
+                    <a href="#" hx-get="{% url 'load_chat' chat.id %}" hx-target="#results" hx-swap="innerHTML">
+                        <span>{{ chat.title }}</span>
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    </aside>
+
+    <main class="chat-container">
+            {# AI 추천 결과가 표시될 영역 #}
+        <div id="results" class="chat-messages">
+            <div class="placeholder-text">
+                <h1>무엇을 추천해 드릴까요?</h1>
+            </div>
+        </div>
+
+        <div class="chat-input-area">
+            <div class="input-wrapper">
+                {# 폼 제출 시 hx-post 요청으로 서버에 데이터를 보내고 응답을 #results 영역에 렌더링 #}
+                <form hx-post="{% url 'run_recommendation' %}" hx-target="#results" hx-swap="innerHTML" hx-indicator="#spinner">
+                    {% csrf_token %}
+                    <textarea id="searchInput" name="query" placeholder="추천받고 싶은 채널의 특징을 입력하세요..."></textarea>
+                    <button type="submit" title="추천 요청 보내기">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                    </button>
+                </form>
+                <div id="searchHistoryDropdown" class="search-history-dropdown">
+                    <ul>
+                        {% for item in quick_history %}
+                            <li>{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {# 요청 처리 중에 표시될 로딩 인디케이터 #}
+            <div id="spinner" class="htmx-indicator">AI가 채널을 찾고 있습니다...</div>
+        </div>
+    </main>
+</div>
+
+<script>
+    // 검색창 포커스 시 드롭다운 메뉴를 보여주고,
+    // 메뉴 아이템 클릭 시 해당 내용으로 검색을 바로 실행하는 스크립트
+    const searchInput = document.getElementById('searchInput');
+    const dropdown = document.getElementById('searchHistoryDropdown');
+    const searchForm = document.querySelector('.chat-input-area form');
+
+    searchInput.addEventListener('focus', () => { dropdown.classList.add('visible'); });
+    searchInput.addEventListener('blur', () => { setTimeout(() => { dropdown.classList.remove('visible'); }, 200); });
+
+    dropdown.addEventListener('click', function(event) {
+        if (event.target.tagName === 'LI') {
+            const selectedQuery = event.target.textContent.trim();
+            searchInput.value = selectedQuery;
+            dropdown.classList.remove('visible');
+            // HTMX 이벤트를 수동으로 발생시켜 폼을 제출.
+            htmx.trigger(searchForm, 'submit');
+        }
+    });
+</script>
+{% endblock %}
