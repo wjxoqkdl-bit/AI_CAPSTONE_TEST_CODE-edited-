@@ -1,0 +1,12 @@
+# Environment variables
+.env
+
+# Django
+db.sqlite3
+
+# Python
+__pycache__/
+*.pyc
+
+# IDE
+.idea/
