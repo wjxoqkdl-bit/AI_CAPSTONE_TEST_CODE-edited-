@@ -1,47 +1,55 @@
 # gptAPI/services.py
 import openai
+import json
+import os
 from django.conf import settings
+
+def load_prompt_config():
+    """JSON 파일에서 프롬프트 설정을 로드합니다."""
+    # settings.BASE_DIR를 사용하여 프로젝트의 기본 경로를 기준으로 파일 경로를 구성합니다.
+    # BASE_DIR는 .../AICapstone/ 입니다.
+    config_path = os.path.join(settings.BASE_DIR, 'gptAPI', 'prompts', 'keyword_extraction.json')
+    try:
+        with open(config_path, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except FileNotFoundError:
+        print(f"Error: Prompt config file not found at {config_path}")
+        return None
+    except json.JSONDecodeError:
+        print(f"Error: Could not decode JSON from {config_path}")
+        return None
 
 def extract_keywords(user_prompt: str, max_keywords: int = 5) -> list[str]:
     """
     사용자의 긴 프롬프트에서 핵심 키워드를 추출합니다.
-
-    :param user_prompt: 사용자가 입력한 장문형 텍스트
-    :param max_keywords: 추출할 최대 키워드 수
-    :return: 추출된 키워드 리스트
+    (이제 JSON 파일에서 설정을 읽어옵니다)
     """
     api_key = getattr(settings, 'OPENAI_API_KEY', None)
     if not api_key:
-        # 실제 프로덕션에서는 로깅 등으로 처리하는 것이 좋습니다.
         print("Error: OpenAI API key is not configured.")
+        return []
+
+    prompt_config = load_prompt_config()
+    if not prompt_config:
         return []
 
     openai.api_key = api_key
 
-    # 키워드 추출을 위한 시스템 메시지 정의
-    system_message = f"""
-    You are an expert at extracting the most relevant keywords from a user's request.
-    Extract the top {max_keywords} most important keywords that represent the user's intent.
-    The keywords should be suitable for a YouTube channel search.
-    Return the keywords as a comma-separated list. For example: 'keyword1, keyword2, keyword3'
-    Do not add any extra text, explanation, or formatting.
-    """
+    # JSON 설정에서 시스템 메시지를 가져와 포맷팅합니다.
+    system_message = prompt_config['system_message'].format(max_keywords=max_keywords)
 
     try:
         response = openai.chat.completions.create(
-            model="gpt-3.5-turbo",
+            model=prompt_config['model'],
             messages=[
                 {"role": "system", "content": system_message},
                 {"role": "user", "content": user_prompt}
             ],
-            max_tokens=50,  # 키워드 추출에는 많은 토큰이 필요하지 않습니다.
-            temperature=0.2, # 키워드 추출은 일관성이 중요하므로 온도를 낮게 설정
+            max_tokens=prompt_config['max_tokens'],
+            temperature=prompt_config['temperature'],
         )
 
-        # API 응답에서 키워드 텍스트 추출
         keyword_string = response.choices[0].message.content.strip()
-        
-        # 쉼표로 구분된 문자열을 리스트로 변환
         keywords = [keyword.strip() for keyword in keyword_string.split(',') if keyword.strip()]
         return keywords
 
