@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "GPTApi",
+    'youtube_api',
 ]
 
 MIDDLEWARE = [
@@ -128,6 +129,7 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# OpenAI API Key
+# API Keys from .env file
 OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
+YOUTUBE_API_KEY = os.environ.get('YOUTUBE_API_KEY')
 
