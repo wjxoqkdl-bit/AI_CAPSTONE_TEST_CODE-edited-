@@ -54,6 +54,22 @@ class YouTubeDataCollector:
         except HttpError as e:
             print(f"API Error (get_video_stats): {e}")
             return []
+
+    def get_video_comments(self, video_id: str, max_results=100):
+        """비디오 ID로 댓글(상위 댓글만) 수집"""
+        try:
+            request = self.youtube.commentThreads().list(
+                part="snippet",
+                videoId=video_id,
+                maxResults=max_results,
+                order="relevance"  # 관련성 높은 순
+            )
+            response = request.execute()
+            return response.get("items", [])
+        except HttpError as e:
+            # 댓글이 비활성화된 경우 등 오류 발생 시 빈 리스트 반환
+            print(f"API Error (get_video_comments): {e}")
+            return []
     
     def get_creator_data_by_ids(self, channel_ids: List[str]):
         """채널 ID 리스트로 각 채널의 상세 정보와 최신 비디오 데이터 종합 반환"""
