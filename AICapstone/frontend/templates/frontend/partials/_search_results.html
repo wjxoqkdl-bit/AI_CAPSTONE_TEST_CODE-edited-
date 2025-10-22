@@ -1,32 +1,34 @@
 <div class="chat-bubble ai-bubble">
+    <p class="summary-paragraph">
+        <strong>`{{ result_data.user_query }}`</strong> 요청에 대해, AI가 분석한 검색어는 다음과 같습니다:
+        <span class="keyword-pills">
+            <span class="pill subject">주제: {{ result_data.keywords.subject }}</span>
+            {% for modifier in result_data.keywords.modifiers %}
+            <span class="pill modifier">수식어: {{ modifier }}</span>
+            {% endfor %}
+            {% if result_data.keywords.audience %}
+            <span class="pill audience">대상: {{ result_data.keywords.audience }}</span>
+            {% endif %}
+        </span>
+    </p>
 
-    <p class="summary-paragraph">{{ recommendation_data.summary|safe }}</p>
-
-    <div class="analysis-table-container">
-        <h4>상세 분석 결과</h4>
-        <table>
-            <thead>
-                <tr>
-                    <th>분석 항목</th>
-                    <th>내용</th>
-                    <th>신뢰도</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in recommendation_data.analysis_table %}
-                <tr>
-                    <td>{{ item.category }}</td>
-                    <td>{{ item.value }}</td>
-                    <td>{{ item.score|floatformat:2 }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <div class="recommendation-list">
+        {% for channel in result_data.recommendations %}
+        <div class="channel-card">
+            <div class="channel-thumbnail">
+                <img src="{{ channel.thumbnail }}" alt="{{ channel.title }} 썸네일">
+            </div>
+            <div class="channel-info">
+                <h4>{{ channel.title }} <span class="score-badge">일치도: {{ channel.score }}점</span></h4>
+                <p class="channel-description"><strong>AI 추천 이유:</strong> {{ channel.reason }}</p>
+                <div class="comment-summary">
+                    <strong>채널 종합 분석:</strong>
+                    <p>{{ channel.summary }}</p>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p>추천할 채널을 찾지 못했습니다.</p>
+        {% endfor %}
     </div>
-
-    <div class="recommendation-footer">
-        <strong>{{ recommendation_data.recommendation_summary }}</strong>
-        <p>{{ recommendation_data.recommendations|join:", " }}</p>
-    </div>
-
 </div>

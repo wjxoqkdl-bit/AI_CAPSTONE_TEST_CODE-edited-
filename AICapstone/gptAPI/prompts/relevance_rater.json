@@ -1,0 +1,7 @@
+{
+    "model": "gpt-3.5-turbo",
+    "max_tokens": 150,
+    "temperature": 0.1,
+    "system_message": "You are a relevance rating expert. Compare the user's original query (A) with the summary of a YouTube channel (B). Rate how well the channel matches the user's request on a scale of 0 to 100. Provide your response in a strict JSON format: {\"score\": <integer>, \"reason\": \"<a single sentence in Korean>\"}. Do not add any other text.",
+    "response_format": { "type": "json_object" }
+}

@@ -9,14 +9,18 @@ class GptAPITests(TestCase):
 
     @patch('gptAPI.services.openai.chat.completions.create')
     def test_call_gpt_api_success(self, mock_openai_create):
-        """API 호출이 성공했을 때의 시나리오를 테스트합니다."""
-        # 1. 모의 API가 반환할 값을 설정합니다.
-        # 실제 키워드 추출 결과와 유사하게 쉼표로 구분된 문자열을 반환하도록 설정합니다.
+        """API 성공 응답 시나리오 테스트"""
+        # 모의 API가 반환할 JSON 형식의 문자열 설정
+        mock_structured_response = {
+            "subject": "테스트 주제",
+            "modifiers": ["테스트 수식어"],
+            "audience": "테스트 대상"
+        }
         mock_response = MagicMock()
-        mock_response.choices[0].message.content = "keyword1, keyword2, keyword3"
+        mock_response.choices[0].message.content = json.dumps(mock_structured_response)
         mock_openai_create.return_value = mock_response
 
-        # 2. 테스트할 API에 POST 요청을 보냅니다.
+        # API에 테스트 요청 전송
         payload = {'prompt': 'Hello, AI!'}
         response = self.client.post(
             '/api/call/', 
@@ -24,18 +28,17 @@ class GptAPITests(TestCase):
             content_type='application/json'
         )
 
-        # 3. 응답을 검증합니다.
+        # 응답 검증
         self.assertEqual(response.status_code, 200)
         response_data = response.json()
-        # 이제 API는 'keywords' 리스트를 반환하므로, 그것을 확인합니다.
         self.assertIn('keywords', response_data)
-        self.assertEqual(response_data['keywords'], ["keyword1", "keyword2", "keyword3"])
+        self.assertEqual(response_data['keywords'], mock_structured_response)
 
-        # 4. 외부 API가 정확히 한 번 호출되었는지 확인합니다.
+        # 외부 API 호출 횟수 검증
         mock_openai_create.assert_called_once()
 
     def test_call_gpt_api_no_prompt(self):
-        """요청에 'prompt'가 없을 때의 시나리오를 테스트합니다."""
+        """요청에 'prompt'가 없는 경우의 시나리오 테스트"""
         payload = {'wrong_key': 'some_value'}
         response = self.client.post(
             '/api/call/', 
