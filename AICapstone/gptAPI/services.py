@@ -80,3 +80,63 @@ def summarize_comments(comments: list[str]) -> str:
     except Exception as e:
         print(f"An error occurred during OpenAI API call: {e}")
         return ""
+
+def analyze_channel_texts(channel_texts: str) -> str:
+    """채널의 모든 텍스트 데이터를 종합하여 분석 및 요약"""
+    api_key = getattr(settings, 'OPENAI_API_KEY', None)
+    if not api_key:
+        return ""
+
+    prompt_config = load_prompt_config('channel_analyzer.json')
+    if not prompt_config:
+        return ""
+
+    openai.api_key = api_key
+
+    try:
+        response = openai.chat.completions.create(
+            model=prompt_config['model'],
+            messages=[
+                {"role": "system", "content": prompt_config['system_message']},
+                {"role": "user", "content": channel_texts}
+            ],
+            max_tokens=prompt_config['max_tokens'],
+            temperature=prompt_config['temperature'],
+        )
+        return response.choices[0].message.content.strip()
+
+    except Exception as e:
+        print(f"An error occurred during OpenAI API call: {e}")
+        return ""
+
+def rate_channel_relevance(user_query: str, channel_summary: str) -> dict:
+    """사용자 쿼리와 채널 요약본을 비교하여 관련도 점수 및 이유 반환"""
+    api_key = getattr(settings, 'OPENAI_API_KEY', None)
+    if not api_key:
+        return {}
+
+    prompt_config = load_prompt_config('relevance_rater.json')
+    if not prompt_config:
+        return {}
+
+    openai.api_key = api_key
+
+    user_content = f"A: {user_query}\n\nB: {channel_summary}"
+
+    try:
+        response = openai.chat.completions.create(
+            model=prompt_config['model'],
+            messages=[
+                {"role": "system", "content": prompt_config['system_message']},
+                {"role": "user", "content": user_content}
+            ],
+            response_format=prompt_config.get('response_format'), # JSON 모드 활성화
+            max_tokens=prompt_config['max_tokens'],
+            temperature=prompt_config['temperature'],
+        )
+        result = json.loads(response.choices[0].message.content)
+        return result
+
+    except Exception as e:
+        print(f"An error occurred during OpenAI API call: {e}")
+        return {}

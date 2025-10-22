@@ -55,6 +55,17 @@ class YouTubeDataCollector:
             print(f"API Error (get_video_stats): {e}")
             return []
 
+    def get_video_details(self, video_ids: List[str]):
+        """비디오 ID 목록으로 각 비디오의 상세 정보(제목, 설명, 태그) 조회"""
+        try:
+            request = self.youtube.videos().list(
+                part="snippet", id=",".join(video_ids)
+            )
+            return request.execute().get("items", [])
+        except HttpError as e:
+            print(f"API Error (get_video_details): {e}")
+            return []
+
     def get_video_comments(self, video_id: str, max_results=100):
         """비디오 ID로 댓글(상위 댓글만) 수집"""
         try:
@@ -70,27 +81,3 @@ class YouTubeDataCollector:
             # 댓글이 비활성화된 경우 등 오류 발생 시 빈 리스트 반환
             print(f"API Error (get_video_comments): {e}")
             return []
-    
-    def get_creator_data_by_ids(self, channel_ids: List[str]):
-        """채널 ID 리스트로 각 채널의 상세 정보와 최신 비디오 데이터 종합 반환"""
-        collected_data = []
-        for channel_id in channel_ids:
-            channel_profile = self.get_channel_details(channel_id)
-            if not channel_profile:
-                continue
-
-            latest_videos = self.get_latest_videos(channel_id)
-            
-            video_ids = [video['id']['videoId'] for video in latest_videos]
-            if video_ids:
-                video_stats = self.get_video_stats(video_ids)
-            else:
-                video_stats = []
-
-            collected_data.append({
-                "channel_profile": channel_profile,
-                "latest_videos": latest_videos,
-                "video_stats": video_stats
-            })
-        
-        return collected_data

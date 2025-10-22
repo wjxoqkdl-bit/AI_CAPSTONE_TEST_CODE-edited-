@@ -14,3 +14,8 @@ __pycache__/
 # Virtualenv
 .venv/
 venv/
+
+# OS-generated files
+*.lnk
+.DS_Store
+Thumbs.db
