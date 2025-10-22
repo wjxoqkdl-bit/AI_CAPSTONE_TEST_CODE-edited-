@@ -14,39 +14,36 @@ def load_prompt_config(filename: str):
         print(f"Error loading prompt config: {e}")
         return None
 
-def extract_keywords(user_prompt: str, max_keywords: int = 5) -> list[str]:
-    """사용자 프롬프트에서 GPT를 이용한 핵심 키워드 추출"""
+def extract_keywords(user_prompt: str) -> dict:
+    """사용자 프롬프트에서 구조화된 키워드(주제, 수식어, 대상)를 추출"""
     api_key = getattr(settings, 'OPENAI_API_KEY', None)
     if not api_key:
-        print("Error: OpenAI API key is not configured.")
-        return []
+        return {}
 
     prompt_config = load_prompt_config('keyword_extraction.json')
     if not prompt_config:
-        return []
+        return {}
 
     openai.api_key = api_key
-
-    system_message = prompt_config['system_message'].format(max_keywords=max_keywords)
 
     try:
         response = openai.chat.completions.create(
             model=prompt_config['model'],
             messages=[
-                {"role": "system", "content": system_message},
+                {"role": "system", "content": prompt_config['system_message']},
                 {"role": "user", "content": user_prompt}
             ],
+            response_format=prompt_config.get('response_format'), # JSON 모드 활성화
             max_tokens=prompt_config['max_tokens'],
             temperature=prompt_config['temperature'],
         )
-
-        keyword_string = response.choices[0].message.content.strip()
-        keywords = [keyword.strip() for keyword in keyword_string.split(',') if keyword.strip()]
-        return keywords
+        
+        structured_keywords = json.loads(response.choices[0].message.content)
+        return structured_keywords
 
     except Exception as e:
         print(f"An error occurred during OpenAI API call: {e}")
-        return []
+        return {}
 
 def summarize_comments(comments: list[str]) -> str:
     """댓글 리스트를 GPT를 이용해 요약"""

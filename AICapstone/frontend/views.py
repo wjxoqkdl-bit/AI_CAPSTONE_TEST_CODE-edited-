@@ -27,16 +27,21 @@ def recommendation_result_view(request):
     if not user_query:
         return render(request, 'frontend/partials/_error.html', {'message': '검색어를 입력해주세요.'})
 
-    keywords = extract_keywords(user_query, max_keywords=3)
-    if not keywords:
+    structured_keywords = extract_keywords(user_query)
+    if not structured_keywords or not structured_keywords.get('subject'):
         return render(request, 'frontend/partials/_error.html', {'message': '키워드를 추출하지 못했습니다.'})
 
     youtube_api_key = getattr(settings, 'YOUTUBE_API_KEY', None)
     if not youtube_api_key:
         return render(request, 'frontend/partials/_error.html', {'message': 'YOUTUBE_API_KEY가 설정되지 않았습니다.'})
 
+    # 구조화된 키워드를 조합하여 검색 쿼리 생성
+    search_terms = [structured_keywords.get('subject', '')]
+    search_terms.extend(structured_keywords.get('modifiers', []))
+    search_terms.append(structured_keywords.get('audience', ''))
+    search_query = " ".join(filter(None, search_terms))
+
     collector = YouTubeDataCollector(youtube_api_key)
-    search_query = " ".join(keywords)
     found_channels = collector.search_channels(keyword=search_query, max_results=5)
 
     rated_channels = []
@@ -76,7 +81,7 @@ def recommendation_result_view(request):
 
     result_data = {
         'user_query': user_query,
-        'keywords': keywords,
+        'keywords': structured_keywords, # 구조화된 키워드 전체를 전달
         'recommendations': sorted_channels
     }
 

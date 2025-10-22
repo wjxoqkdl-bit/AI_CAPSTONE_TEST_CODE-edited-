@@ -1,6 +1,15 @@
 <div class="chat-bubble ai-bubble">
     <p class="summary-paragraph">
-        <strong>`{{ result_data.user_query }}`</strong> 요청에 대해, AI가 추출한 핵심 키워드(<strong>{{ result_data.keywords|join:", " }}</strong>)를 바탕으로 채널을 분석하고 평가했습니다.
+        <strong>`{{ result_data.user_query }}`</strong> 요청에 대해, AI가 분석한 검색어는 다음과 같습니다:
+        <span class="keyword-pills">
+            <span class="pill subject">주제: {{ result_data.keywords.subject }}</span>
+            {% for modifier in result_data.keywords.modifiers %}
+            <span class="pill modifier">수식어: {{ modifier }}</span>
+            {% endfor %}
+            {% if result_data.keywords.audience %}
+            <span class="pill audience">대상: {{ result_data.keywords.audience }}</span>
+            {% endif %}
+        </span>
     </p>
 
     <div class="recommendation-list">
