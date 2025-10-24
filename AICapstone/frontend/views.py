@@ -35,14 +35,12 @@ def recommendation_result_view(request):
     if not youtube_api_key:
         return render(request, 'frontend/partials/_error.html', {'message': 'YOUTUBE_API_KEY가 설정되지 않았습니다.'})
 
-    # 구조화된 키워드를 조합하여 검색 쿼리 생성
-    search_terms = [structured_keywords.get('subject', '')]
-    search_terms.extend(structured_keywords.get('modifiers', []))
-    search_terms.append(structured_keywords.get('audience', ''))
-    search_query = " ".join(filter(None, search_terms))
+    # 핵심 '주제' 키워드만으로 검색 쿼리 생성
+    search_query = structured_keywords.get('subject', '')
 
     collector = YouTubeDataCollector(youtube_api_key)
-    found_channels = collector.search_channels(keyword=search_query, max_results=5)
+    # 더 많은 후보군을 확보하기 위해 검색 결과 수를 늘림
+    found_channels = collector.search_channels(keyword=search_query, max_results=10)
 
     rated_channels = []
     for channel in found_channels:
