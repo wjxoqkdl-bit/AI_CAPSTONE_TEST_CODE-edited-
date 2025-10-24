@@ -56,10 +56,10 @@ class YouTubeDataCollector:
             return []
 
     def get_video_details(self, video_ids: List[str]):
-        """비디오 ID 목록으로 각 비디오의 상세 정보(제목, 설명, 태그) 조회"""
+        """비디오 ID 목록으로 각 비디오의 상세 정보(제목, 설명, 태그, 통계) 조회"""
         try:
             request = self.youtube.videos().list(
-                part="snippet", id=",".join(video_ids)
+                part="snippet,statistics", id=",".join(video_ids)
             )
             return request.execute().get("items", [])
         except HttpError as e:
