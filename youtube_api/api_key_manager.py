@@ -1,7 +1,6 @@
 # youtube_api/api_key_manager.py
 import random
 import threading
-from django.conf import settings
 
 class ApiKeyManager:
     _instance = None
@@ -26,6 +25,7 @@ class ApiKeyManager:
         if self.api_keys is None:
             with self.lock:
                 if self.api_keys is None:
+                    from django.conf import settings
                     keys = getattr(settings, 'YOUTUBE_API_KEYS', [])
                     if not keys:
                         raise ValueError("YOUTUBE_API_KEYS setting is missing or empty in Django settings.")
