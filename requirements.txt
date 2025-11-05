@@ -1,15 +1,15 @@
 altair==5.5.0
-annotated-types @ file:///C:/b/abs_0dmaoyhhj3/croot/annotated-types_1709542968311/work
-anyio @ file:///C:/miniconda3/conda-bld/anyio_1758622521119/work
+annotated-types
+anyio
 asgiref==3.10.0
 attrs==25.4.0
 blinker==1.9.0
 cachetools==6.2.1
-certifi @ file:///C:/miniconda3/conda-bld/certifi_1759786076776/work/certifi
+certifi
 charset-normalizer==3.4.3
 click==8.3.0
-colorama @ file:///C:/ci_311/colorama_1676422310965/work
-distro @ file:///C:/b/abs_71xr36ua5r/croot/distro_1714488282676/work
+colorama
+distro
 Django==5.2.7
 git-filter-repo==2.47.0
 gitdb==4.0.12
@@ -19,19 +19,19 @@ google-api-python-client==2.184.0
 google-auth==2.41.1
 google-auth-httplib2==0.2.0
 googleapis-common-protos==1.70.0
-h11 @ file:///C:/b/abs_224rqu7kel/croot/h11_1748442031959/work
-httpcore @ file:///C:/b/abs_25m7_xthp6/croot/httpcore_1748526065845/work
+h11
+httpcore
 httplib2==0.31.0
-httpx @ file:///C:/b/abs_9fclaf1b46/croot/httpx_1746747856672/work
+httpx
 idna==3.11
 Jinja2==3.1.6
-jiter @ file:///C:/b/abs_acsxrw36a6/croot/jiter_1729808947806/work
+jiter
 jsonschema==4.25.1
 jsonschema-specifications==2025.9.1
 MarkupSafe==3.0.3
 narwhals==2.8.0
 numpy==2.3.3
-openai @ file:///C:/miniconda3/conda-bld/openai_1759140361305/work
+openai
 packaging==25.0
 pandas==2.3.3
 pillow==11.3.0
@@ -40,8 +40,8 @@ protobuf==6.32.1
 pyarrow==21.0.0
 pyasn1==0.6.1
 pyasn1_modules==0.4.2
-pydantic @ file:///C:/miniconda3/conda-bld/pydantic_1758736885368/work
-pydantic_core @ file:///C:/b/abs_d0xs0z3erk/croot/pydantic-core_1750754747982/work
+pydantic
+pydantic_core
 pydeck==0.9.1
 pyparsing==3.2.5
 python-dateutil==2.9.0.post0
@@ -53,15 +53,15 @@ rpds-py==0.27.1
 rsa==4.9.1
 six==1.17.0
 smmap==5.0.2
-sniffio @ file:///C:/b/abs_3akdewudo_/croot/sniffio_1705431337396/work
+sniffio
 sqlparse==0.5.3
 streamlit==1.50.0
 tenacity==9.1.2
 toml==0.10.2
 tornado==6.5.2
-tqdm @ file:///C:/b/abs_0eh9b6xugj/croot/tqdm_1738945553987/work
-typing-inspection @ file:///C:/b/abs_261c5jt6kx/croot/typing-inspection_1746023491500/work
-typing_extensions @ file:///C:/b/abs_ecq8gc0vbm/croot/typing_extensions_1756281142218/work
+tqdm
+typing-inspection
+typing_extensions
 tzdata==2025.2
 uritemplate==4.2.0
 urllib3==2.5.0
