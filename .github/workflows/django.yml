@@ -32,5 +32,5 @@ jobs:
       run: |
         pip install awsebcli --upgrade
         eb init 2025-AI-Capstone -p python-3.11 --region ap-northeast-2
-        eb setenv OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} YOUTUBE_API_KEY=${{ secrets.YOUTUBE_API_KEY }}
+        eb setenv OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} YOUTUBE_API_KEY=${{ secrets.YOUTUBE_API_KEY }} --force
         eb deploy 2025-AI-Capstone-dev
