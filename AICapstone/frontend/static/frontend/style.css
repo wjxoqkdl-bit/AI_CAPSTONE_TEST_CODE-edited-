@@ -91,6 +91,7 @@ body {
 .pill.subject { background-color: #E9D8FD; color: #6B46C1; }
 .pill.modifier { background-color: #C6F6D5; color: #2F855A; }
 .pill.audience { background-color: #BEE3F8; color: #2B6CB0; }
+.pill.search-query { background-color: #E0E7FF; color: #4338CA; }
 
 .recommendation-list { display: flex; flex-direction: column; gap: 20px; margin-top: 20px; }
 .channel-card { display: flex; gap: 20px; align-items: flex-start; }

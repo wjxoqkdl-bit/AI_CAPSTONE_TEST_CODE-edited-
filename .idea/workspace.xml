@@ -5,8 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4123f667-dc2c-4cdf-aea8-6ed67b1d3fc3" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/2025_AI_Capstone.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/2025_AI_Capstone.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,7 +44,7 @@
   &quot;keyToString&quot;: {
     &quot;RunOnceActivity.OpenDjangoStructureViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;chw__commentAnalysis&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;chw__promptTestingScript&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -102,6 +101,8 @@
       <workItem from="1760448787589" duration="3749000" />
       <workItem from="1760523865041" duration="604000" />
       <workItem from="1761131583026" duration="337000" />
+      <workItem from="1761192335529" duration="3137000" />
+      <workItem from="1761196301774" duration="209000" />
     </task>
     <servers />
   </component>

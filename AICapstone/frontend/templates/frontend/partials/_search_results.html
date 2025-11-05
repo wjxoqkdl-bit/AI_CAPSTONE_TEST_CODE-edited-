@@ -1,14 +1,10 @@
 <div class="chat-bubble ai-bubble">
     <p class="summary-paragraph">
-        <strong>`{{ result_data.user_query }}`</strong> 요청에 대해, AI가 분석한 검색어는 다음과 같습니다:
+        <strong>`{{ result_data.user_query }}`</strong> 요청에 대해, AI가 생성한 검색어는 다음과 같습니다:
         <span class="keyword-pills">
-            <span class="pill subject">주제: {{ result_data.keywords.subject }}</span>
-            {% for modifier in result_data.keywords.modifiers %}
-            <span class="pill modifier">수식어: {{ modifier }}</span>
+            {% for query in result_data.keywords %}
+            <span class="pill search-query">{{ query }}</span>
             {% endfor %}
-            {% if result_data.keywords.audience %}
-            <span class="pill audience">대상: {{ result_data.keywords.audience }}</span>
-            {% endif %}
         </span>
     </p>
 
@@ -19,7 +15,8 @@
                 <img src="{{ channel.thumbnail }}" alt="{{ channel.title }} 썸네일">
             </div>
             <div class="channel-info">
-                <h4>{{ channel.title }} <span class="score-badge">일치도: {{ channel.score }}점</span></h4>
+                <h4>{{ channel.title }} <span class="score-badge">최종 점수: {{ channel.final_score|floatformat:2 }}점</span></h4>
+                <p class="channel-description"><strong>AI 관련성:</strong> {{ channel.ai_score }}점, <strong>활동성:</strong> {{ channel.activity_score|floatformat:2 }}점, <strong>신뢰도:</strong> {{ channel.reliability_score|floatformat:2 }}점</p>
                 <p class="channel-description"><strong>AI 추천 이유:</strong> {{ channel.reason }}</p>
                 <div class="comment-summary">
                     <strong>채널 종합 분석:</strong>
