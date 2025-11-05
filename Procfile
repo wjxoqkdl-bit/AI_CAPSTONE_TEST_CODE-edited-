@@ -1,1 +1,1 @@
-web: gunicorn --bind 127.0.0.1:8000 --workers 1 --threads 15 --timeout 300 AICapstone.wsgi:application
+web: gunicorn --bind 0.0.0.0:8000 --workers 1 --threads 15 --timeout 300 AICapstone.wsgi:application
