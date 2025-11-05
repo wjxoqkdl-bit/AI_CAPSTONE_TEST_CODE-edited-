@@ -1,32 +1,43 @@
 # youtube_api/api_key_manager.py
 import random
 import threading
+from django.conf import settings
 
 class ApiKeyManager:
     _instance = None
     _lock = threading.Lock()
 
-    def __new__(cls, *args, **kwargs):
+    def __new__(cls):
         if not cls._instance:
             with cls._lock:
                 if not cls._instance:
                     cls._instance = super().__new__(cls)
         return cls._instance
 
-    def __init__(self, api_keys: list = None):
+    def __init__(self):
         if not hasattr(self, 'initialized'):
-            if not api_keys:
-                raise ValueError("API 키 리스트는 비어있을 수 없습니다.")
-            self.api_keys = api_keys
+            # Initialize with None. Keys will be loaded on first use.
+            self.api_keys = None
+            self.lock = threading.Lock()
             self.initialized = True
+
+    def _load_keys(self):
+        # Double-checked locking to ensure keys are loaded only once.
+        if self.api_keys is None:
+            with self.lock:
+                if self.api_keys is None:
+                    keys = getattr(settings, 'YOUTUBE_API_KEYS', [])
+                    if not keys:
+                        raise ValueError("YOUTUBE_API_KEYS setting is missing or empty in Django settings.")
+                    self.api_keys = keys
 
     def get_next_key(self) -> str:
         """
-        멀티프로세스 환경(Gunicorn)에서는 각 프로세스가 자신만의 인덱스를 가지므로
-        순차적 순환보다 랜덤 선택이 키 사용량을 더 효과적으로 분산시킵니다.
+        Lazily loads keys on the first call and returns a random key.
+        Random selection is better for distributing usage in a multi-process environment.
         """
+        self._load_keys()
         return random.choice(self.api_keys)
 
-# 싱글턴 인스턴스를 settings에서 초기화하여 사용
-# from django.conf import settings
-# api_key_manager = ApiKeyManager(settings.YOUTUBE_API_KEYS)
+# Create a single, global instance of the manager for the application to use.
+api_key_manager = ApiKeyManager()

@@ -1,21 +1,12 @@
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from typing import List
-from django.conf import settings
-from .api_key_manager import ApiKeyManager
-
-# Initialize the ApiKeyManager as a singleton instance
-if settings.YOUTUBE_API_KEYS:
-    api_key_manager = ApiKeyManager(settings.YOUTUBE_API_KEYS)
-else:
-    api_key_manager = None
+from .api_key_manager import api_key_manager
 
 class YouTubeDataCollector:
     """YouTube Data API v3를 사용한 채널 및 비디오 데이터 수집"""
     
     def _get_youtube_service(self):
-        if not api_key_manager:
-            raise ValueError("API 키가 설정되지 않았습니다.")
         api_key = api_key_manager.get_next_key()
         return build('youtube', 'v3', developerKey=api_key)
 
