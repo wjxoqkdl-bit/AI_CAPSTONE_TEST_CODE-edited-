@@ -101,11 +101,10 @@ def recommendation_result_view(request):
     if not search_queries:
         return render(request, 'frontend/partials/_error.html', {'message': '키워드를 추출하지 못했습니다.'})
 
-    youtube_api_key = getattr(settings, 'YOUTUBE_API_KEY', None)
-    if not youtube_api_key:
+    if not settings.YOUTUBE_API_KEYS:
         return render(request, 'frontend/partials/_error.html', {'message': 'YOUTUBE_API_KEY가 설정되지 않았습니다.'})
 
-    collector = YouTubeDataCollector(youtube_api_key)
+    collector = YouTubeDataCollector()
     
     try:
         # 다중 키워드로 교차 검색 및 후보군 통합

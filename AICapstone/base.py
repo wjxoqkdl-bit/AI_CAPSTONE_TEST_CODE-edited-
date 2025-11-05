@@ -136,5 +136,6 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # API Keys from .env file
 OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
-YOUTUBE_API_KEY = os.environ.get('YOUTUBE_API_KEY')
+YOUTUBE_API_KEYS = [key.strip() for key in os.environ.get('YOUTUBE_API_KEY', '').split(',') if key.strip()]
+
 
