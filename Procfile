@@ -1,0 +1,1 @@
+web: gunicorn AICapstone.wsgi --log-file -
