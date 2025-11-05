@@ -107,14 +107,18 @@ def recommendation_result_view(request):
 
     collector = YouTubeDataCollector(youtube_api_key)
     
-    # 다중 키워드로 교차 검색 및 후보군 통합
-    candidate_channels = {}
-    for query in search_queries:
-        found_channels = collector.search_channels(keyword=query, max_results=5) # 검색어당 5개씩
-        for channel in found_channels:
-            channel_id = channel['id']['channelId']
-            if channel_id not in candidate_channels:
-                candidate_channels[channel_id] = channel # 중복 제거하며 추가
+    try:
+        # 다중 키워드로 교차 검색 및 후보군 통합
+        candidate_channels = {}
+        for query in search_queries:
+            found_channels = collector.search_channels(keyword=query, max_results=5) # 검색어당 5개씩
+            for channel in found_channels:
+                channel_id = channel['id']['channelId']
+                if channel_id not in candidate_channels:
+                    candidate_channels[channel_id] = channel # 중복 제거하며 추가
+    except Exception as e:
+        # HttpError를 포함한 모든 API 관련 예외 처리
+        return render(request, 'frontend/partials/_error.html', {'message': f'YouTube API 호출 중 오류가 발생했습니다: {e}'})
 
     rated_channels = []
     for channel_id, channel in candidate_channels.items():
