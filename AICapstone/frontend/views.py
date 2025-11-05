@@ -226,7 +226,5 @@ def parse_duration_to_seconds(duration_str: str) -> int:
 
 def load_chat_view(request, chat_id):
     """과거 채팅 기록 렌더링 (더미 데이터)"""
-    # ... (이 부분은 현재 로직과 무관하므로 그대로 둡니다)
-
-
-
+    # 임시 응답 추가
+    return render(request, 'frontend/search.html', {'chat_id': chat_id, 'message': '과거 채팅 기록 로드 예정'})
