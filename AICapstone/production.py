@@ -9,6 +9,6 @@ DEBUG = False
 ALLOWED_HOSTS = ['aicapstone-dev.ap-northeast-2.elasticbeanstalk.com', '.elasticbeanstalk.com', 'localhost', '127.0.0.1']
 
 # static files
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = os.path.join(BASE_DIR.parent, 'staticfiles')
 
 
