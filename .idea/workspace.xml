@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4123f667-dc2c-4cdf-aea8-6ed67b1d3fc3" name="변경" comment="" />
+    <list default="true" id="4123f667-dc2c-4cdf-aea8-6ed67b1d3fc3" name="변경" comment="">
+      <change beforePath="$PROJECT_DIR$/AICapstone/production.py" beforeDir="false" afterPath="$PROJECT_DIR$/AICapstone/production.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
