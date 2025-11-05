@@ -15,9 +15,9 @@ import os
 from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent
 
-# Load .env file
+# Load .env file from the project root
 load_dotenv(os.path.join(BASE_DIR.parent, '.env'))
 
 
@@ -125,7 +125,7 @@ USE_TZ = True
 STATIC_URL = "static/"
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'frontend', 'static'),
+    os.path.join(BASE_DIR.parent, 'frontend', 'static'),
 ]
 
 # Default primary key field type
