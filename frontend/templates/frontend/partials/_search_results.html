@@ -11,17 +11,38 @@
     <div class="recommendation-list">
         {% for channel in result_data.recommendations %}
         <div class="channel-card">
-            <div class="channel-thumbnail">
-                <img src="{{ channel.thumbnail }}" alt="{{ channel.title }} 썸네일">
-            </div>
+
+            <a href="https://www.youtube.com/channel/{{ channel.channel_id }}" target="_blank" rel="noopener noreferrer">
+                <div class="channel-thumbnail">
+                    <img src="{{ channel.thumbnail }}" alt="{{ channel.title }} 썸네일">
+                </div>
+            </a>
+
             <div class="channel-info">
-                <h4>{{ channel.title }} <span class="score-badge">최종 점수: {{ channel.final_score|floatformat:2 }}점</span></h4>
+                <h4>
+                    <a href="https://www.youtube.com/channel/{{ channel.channel_id }}" target="_blank" rel="noopener noreferrer" class="channel-title-link">
+                        {{ channel.title }}
+                    </a>
+                    <span class="score-badge">최종 점수: {{ channel.final_score|floatformat:2 }}점</span>
+                </h4>
                 <p class="channel-description"><strong>AI 관련성:</strong> {{ channel.ai_score }}점, <strong>활동성:</strong> {{ channel.activity_score|floatformat:2 }}점, <strong>신뢰도:</strong> {{ channel.reliability_score|floatformat:2 }}점</p>
                 <p class="channel-description"><strong>AI 추천 이유:</strong> {{ channel.reason }}</p>
                 <div class="comment-summary">
                     <strong>채널 종합 분석:</strong>
                     <p>{{ channel.summary }}</p>
                 </div>
+
+                {% if forloop.counter <= 3 and channel.latest_video_id %}
+                <div class="video-embed-container">
+                    <iframe
+                        src="https://www.youtube-nocookie.com/embed/{{ channel.latest_video_id }}"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen>
+                    </iframe>
+                </div>
+                {% endif %}
+
             </div>
         </div>
         {% empty %}

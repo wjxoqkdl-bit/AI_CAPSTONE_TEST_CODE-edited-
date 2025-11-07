@@ -158,7 +158,7 @@ class YouTubeDataCollector:
                 
                 def builder(youtube_service):
                     return youtube_service.videos().list(
-                        part="snippet,statistics,contentDetails",
+                        part="snippet,statistics,contentDetails,status",
                         id=",".join(chunk)
                     )
                 
