@@ -25,7 +25,7 @@ body {
 }
 
 /*로그인 페이지*/
-.login-page-wrapper { display: flex; justify-content: center; align-items: center; height: 100%; padding: 20px; box-sizing: border-box; }
+.login-page-wrapper { display: flex; justify-content: center; align-items: center; height: 100vh; padding: 20px; box-sizing: border-box; }
 .form-container {
     width: 100%;
     max-width: 400px;
@@ -172,3 +172,30 @@ body {
 .search-history-dropdown ul { list-style: none; padding: 8px; margin: 0; }
 .search-history-dropdown li { padding: 10px 12px; cursor: pointer; border-radius: 8px; color: var(--subtle-text-color); }
 .search-history-dropdown li:hover { background-color: rgba(0, 0, 0, 0.05); color: var(--text-color); }
+/* [추가] 채널 제목 하이퍼링크 스타일 */
+.channel-title-link {
+    text-decoration: none;
+    color: var(--text-color); /* 기존 제목 색상 유지 */
+}
+.channel-title-link:hover {
+    text-decoration: underline; /* 마우스 올리면 밑줄 표시 */
+}
+
+/* [추가] 상위 3개 결과에 표시될 비디오 iframe 스타일 */
+.video-embed-container {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    padding-top: 56.25%; /* 16:9 비율 (Height / Width * 100) */
+    margin-top: 15px; /* 분석 요약과의 간격 */
+    border-radius: 12px; /* 카드와 통일감 */
+}
+
+.video-embed-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
