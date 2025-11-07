@@ -130,6 +130,7 @@ def recommendation_result_view(request):
         video_count = int(channel_details.get('statistics', {}).get('videoCount', 0)) if channel_details else 0
         view_count = int(channel_details.get('statistics', {}).get('viewCount', 0)) if channel_details else 0
 
+        latest_videos = collector.get_latest_videos(channel_id, max_results=3)
         # 최신 영상 업로드 날짜 가져오기
         latest_videos_snippet = collector.get_latest_videos(channel_id, max_results=1)
         last_upload_date = latest_videos_snippet[0]['snippet']['publishedAt'] if latest_videos_snippet else None
@@ -140,8 +141,7 @@ def recommendation_result_view(request):
             activity_score = calculate_activity_score(video_count, last_upload_date)
 
         # 비디오 텍스트 데이터 수집 (기존 로직)
-        latest_videos = collector.get_latest_videos(channel_id, max_results=3)
-        video_ids = [video['id']['videoId'] for video in latest_videos]
+        video_ids = [video['snippet']['resourceId']['videoId'] for video in latest_videos if video.get('snippet', {}).get('resourceId', {}).get('videoId')]
         video_details = collector.get_video_details(video_ids)
 
         # 비디오 통계 (좋아요/싫어요, 길이) 수집
